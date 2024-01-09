@@ -13,10 +13,10 @@
     <script src="apikey.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap');
 
         * {
-            font-family: 'Nanum Pen Script', cursive;
+            font-family: 'Noto Sans KR', sans-serif;
         }
 
         .main {
@@ -126,12 +126,12 @@
         </div>
         <div class="form-floating mb-3">
             <input id="detailed_vote_average" type="text" class="form-control" id="release_date" placeholder="평점">
-            <label for="floatingInput">평점</label>
+            <label for="floatingInput">평점 (ex. 1.234)</label>
         </div>
         <button onclick="search(false)" type="button" class="btn btn-danger">검색</button>
     </div>
     <div class="initial-ist" style="text-align:center">
-        <font color="white" id="result_title" size=10>인기 영화 10위</font>
+        <font color="white" id="result_title" size=10>인기 영화 20위</font>
     </div>
     <div class="mycards">
         <div id="card" class="row row-cols-1 row-cols-md-4 g-4"></div>

@@ -30,6 +30,7 @@ async function getMovieByPage(page) {
             'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle,
             'releaseDate': releaseDate, 'voteAverage': voteAverage, 'overview': overview
         });
+
     }
 
     return result;
@@ -187,7 +188,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     getMovieByPage(1).then(result => {
-        for (let index = 0; index < 10; index++) {
+        for (let index = 0; index < 20; index++) {
             makeCard(...Object.values(result[index]), index);
         }
     })
@@ -355,8 +356,7 @@ async function search(isSimpleSearch) {
     let keyword;
     let option = contentSimpleSearchOption;
     let contentList = []
-    let moviePageCount;
-    let TVPageCount;
+    let pageCount;
     let currentPages = 0;
 
     console.log('검색 버튼 클릭');
@@ -380,44 +380,43 @@ async function search(isSimpleSearch) {
     }
 
     if (!checkSearchKeyword(isSimpleSearch, option, keyword)) {
-        console.log('검색어 체크 실패');
         return;
     }
-    console.log('검색어 체크 성공');
-    return; // 임시
+
     if (navigationStatus === 'movie') {
-        moviePageCount = await getMovieTotalPagesCount();
-        console.log('page 개수', moviePageCount);
+        //moviePageCount = await getMovieTotalPagesCount(); // 페이지 너무 많음
+        pageCount = 5;
 
         let pages = []
 
-        for (let i = 1; i <= moviePageCount; i++) {
+        for (let i = 1; i <= pageCount; i++) {
             pages.push(i);
         }
 
         await Promise.allSettled(
             pages.map(async item => {
                 contentList = contentList.concat(await getMovieByPage(item));
-                console.log(item);
+                console.log('page', item);
                 currentPages++;
-                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${moviePageCount})`;
+                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${pageCount})`;
             }));
     } else {
-        TVPageCount = await getTVTotalPagesCount();
-        console.log('page 개수', TVPageCount);
+        //TVPageCount = await getTVTotalPagesCount();
+        pageCount = 5;
+        console.log('page 개수', pageCount);
 
         let pages = []
 
-        for (let i = 1; i <= TVPageCount; i++) {
+        for (let i = 1; i <= pageCount; i++) {
             pages.push(i);
         }
 
         await Promise.allSettled(
             pages.map(async item => {
                 contentList = contentList.concat(await getTVByPage(item));
-                console.log(item);
+                console.log('page', item);
                 currentPages++;
-                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${moviePageCount})`;
+                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${pageCount})`;
             }));
     }
     if (isSimpleSearch) {
@@ -437,17 +436,23 @@ async function search(isSimpleSearch) {
         }
     }
     else {
-        contentList = contentList.filter(content => content['voteAverage'] === Number(keyword))
-            .filter(content => isEqualDate(content['releaseDate'], new Date(keyword)))
-            .filter(content => content['title'].toUpperCase().includes(keyword.toUpperCase()))
-            .filter(content => content['originalTitle'].toUpperCase().includes(keyword.toUpperCase()));
+        console.log('영화 가져오기');
+        console.log(contentList);
+
+        // for (content of contentList) {
+        //     console.log('평점', content['voteAverage'], Number(keyword['voteAverage']));
+        // }
+        contentList = contentList.filter(content => content['voteAverage'] === Number(keyword['voteAverage']))
+            .filter(content => isEqualDate(content['releaseDate'], new Date(keyword['releaseDate'])))
+            .filter(content => content['title'].toUpperCase().includes(keyword['title'].toUpperCase()))
+            .filter(content => content['originalTitle'].toUpperCase().includes(keyword['originalTitle'].toUpperCase()));
     }
 
     clearCards();
-    for (let index = 0; index < contentSearchResult.length; index++)
-        makeCard(...Object.values(contentSearchResult[index]), index);
+    for (let index = 0; index < contentList.length; index++)
+        makeCard(...Object.values(contentList[index]), index);
     contentList = [];
-    $resultTitle.textContent = `${contentSimpleSearchOption} 검색 결과 (${currentPages}/${moviePageCount})`;
+    $resultTitle.textContent = `${contentSimpleSearchOption} 검색 결과 (${currentPages}/${pageCount})`;
 }
 
 function home() {
@@ -470,11 +475,11 @@ function TV() {
     navigationStatus = 'TV';
     clearCards();
     getTVByPage(1).then(result => {
-        for (let index = 0; index < 10; index++) {
+        for (let index = 0; index < 20; index++) {
             makeCard(...Object.values(result[index]), index);
         }
     })
-    $resultTitle.textContent = '인기 TV 시리즈 10위';
+    $resultTitle.textContent = '인기 TV 시리즈 20위';
 }
 
 async function myReservations() {
