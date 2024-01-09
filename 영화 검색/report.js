@@ -1,8 +1,7 @@
-var movieSimpleSearchOption = '제목';
-var contentReservationSet = new Set()
-var contentReservationList = [];
-var movieSearchResult = [];
+var contentSimpleSearchOption = '제목';
 var navigationStatus = 'movie';
+var contentReservationList = [];
+const TMDB_API = config.APIKey;
 
 async function getMovieByPage(page) {
     result = []
@@ -10,7 +9,7 @@ async function getMovieByPage(page) {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
     const movies = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=ko-kor&page=${page}`, options)
@@ -24,7 +23,7 @@ async function getMovieByPage(page) {
         let title = movies[index]['title'];
         let originalTitle = movies[index]['original_title'];
         let releaseDate = new Date(String(movies[index]['release_date']));
-        let overview = movies[index]['overview'].replaceAll('\'', '');
+        let overview = movies[index]['overview'].replace('\'', '');
         let voteAverage = movies[index]['vote_average'];
 
         result.push({
@@ -42,7 +41,7 @@ async function getTVByPage(page) {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
     const TVSerises = await fetch(`https://api.themoviedb.org/3/discover/tv?language=ko-KR&page=${page}&sort_by=popularity.desc`, options)
@@ -53,10 +52,10 @@ async function getTVByPage(page) {
     for (let index = 0; index < TVSerises.length; index++) {
         let contentId = TVSerises[index]['id'];
         let posterPath = 'https://image.tmdb.org/t/p/original/' + TVSerises[index]['poster_path'];
-        let title = TVSerises[index]['name'];
+        let title = TVSerises[index]['name'].replace('\'', '');
         let originalTitle = TVSerises[index]['original_name'];
         let releaseDate = new Date(String(TVSerises[index]['first_air_date']));
-        let overview = TVSerises[index]['overview'].replaceAll('\'', '');
+        let overview = TVSerises[index]['overview'];
         let voteAverage = TVSerises[index]['vote_average'];
 
         result.push({
@@ -73,7 +72,7 @@ async function getMovieById(id) {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
     // fetch('https://api.themoviedb.org/3/discover/tv?language=ko-KR&page=1&sort_by=popularity.desc', options) // 드라마
@@ -101,7 +100,7 @@ async function getTVById(id) { // 작동 안함
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
     const result = await fetch(`https://api.themoviedb.org/3/TV/${id}?language=ko-KR`, options)
@@ -132,7 +131,7 @@ async function getMovieTotalCount() {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
 
@@ -149,11 +148,28 @@ async function getMovieTotalPagesCount() {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI5YzJkOGRjYWYwNTk1N2I0Y2MwNzgzYmQ5MzAyMzc4MiIsInN1YiI6IjY1OTY0OGE2NTkwN2RlMDk1MjYzYmYxYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.YqIDxHAXnnf_hBndtoVq8hT90OnxLTszv9onSkZdVRM'
+            Authorization: config.APIKey
         }
     };
 
     const result = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=ko-kor&page=1`, options)
+        .then(response => response.json())
+        .then(response => response['total_pages'])
+        .catch(err => console.error(err));
+
+    return result;
+}
+
+async function getTVTotalPagesCount() {
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: config.APIKey
+        }
+    };
+
+    const result = fetch('https://api.themoviedb.org/3/tv/top_rated?language=en-US&page=1', options)
         .then(response => response.json())
         .then(response => response['total_pages'])
         .catch(err => console.error(err));
@@ -186,6 +202,7 @@ function isEqualDate(date1, date2) {
 
 function makeCard(contentId, posterPath, title, originalTitle, releaseDate, voteAverage, overview, index) {
     const $card = document.querySelector('#card');
+    let $overview;
     let newCard = `<div class="col" >
         <div class="card">
             <img src="${posterPath}" class="card-img-top" alt="...">
@@ -225,19 +242,19 @@ function setSearch(option) {
     switch (option) {
         case '제목':
             $simpleSearchText.placeholder = '제목으로 검색';
-            movieSimpleSearchOption = '제목';
+            contentSimpleSearchOption = '제목';
             break;
         case '원제':
             $simpleSearchText.placeholder = '원제로 검색';
-            movieSimpleSearchOption = '원제';
+            contentSimpleSearchOption = '원제';
             break;
         case '출시일':
             $simpleSearchText.placeholder = '출시일로 검색 (ex. 1997.01.01)';
-            movieSimpleSearchOption = '출시일';
+            contentSimpleSearchOption = '출시일';
             break;
         case '평점':
             $simpleSearchText.placeholder = '평점으로 검색 (ex. 1.234)';
-            movieSimpleSearchOption = '평점';
+            contentSimpleSearchOption = '평점';
             break;
     }
 }
@@ -258,7 +275,14 @@ function showSearch(flag) {
 
 function reserve(contentId, posterPath, title, originalTitle, releaseDate, voteAverage, overview) {
     let content = { 'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle, 'releaseDate': new Date(releaseDate), 'voteAverage': voteAverage, 'overview': overview };
-    contentReservationSet.add(content);
+
+    for (let i = 0; i < contentReservationList.length; i++) {
+        if (contentReservationList[i]['contentId'] === content['contentId']) {
+            alert(`${title}(${contentId})가 이미 찜목록에 있습니다.`);
+            return;
+        }
+    }
+    contentReservationList.push(content);
     alert(`${title}(${contentId})가 찜목록에 추가되었습니다.`);
 }
 
@@ -270,88 +294,160 @@ function clearCards() {
     }
 }
 
-async function simpleSearch() {
-    let $simpleSearchText = document.querySelector('#simple_search_text');
+function checkSearchKeyword(isSimpleSearch, option, keyword) {
+    if (isSimpleSearch) {
+        console.log('간단 검색어 체크 시작');
+        console.log('option', option);
+        if (keyword === '') {
+            alert(`검색할 ${option}을(를) 입력하세요.`);
+            return false;
+        }
+
+        else if (option === '출시일') {
+            console.log(option, '검색어  필터링');
+            let regex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
+            if (!regex.test(keyword)) {
+                alert('입력한 출시일이 올바른 형식이 아닙니다.');
+                return false;
+            }
+        }
+
+        else if (option === '평점') {
+            console.log(option, '검색어  필터링');
+            let regex = RegExp(/^[1-9]{1}\.{1}[0-9]{3}$/);
+            if (!regex.test(keyword)) {
+                alert('입력한 평점이 올바른 형식이 아닙니다.');
+                return false;
+            }
+        }
+    }
+    else {
+        console.log('상세 검색어 체크 시작');
+        let releaseDateRegex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
+        let voteAverageRregex = RegExp(/^[1-9]{1}\.{1}[0-9]{3}$/);
+
+        if (keyword['title'] === '' || keyword['originalTitle'] === '' || keyword['releaseDate'] === '' || keyword['voteAverage'] === '') {
+            alert('검색할 내용 중 빈칸이 있습니다.');
+            return false;
+        }
+
+        else if (!releaseDateRegex.test(keyword['releaseDate'])) {
+            alert('입력한 출시일이 올바른 형식이 아닙니다.');
+            return false;
+        }
+
+        else if (!voteAverageRregex.test(keyword['voteAverage'])) {
+            alert('입력한 평점이 올바른 형식이 아닙니다.');
+            return false;
+        }
+    }
+    return true;
+}
+
+async function search(isSimpleSearch) {
+    let $simpleSearchText;
+    let $detailedSearchTitle;
+    let $detailedSearchOriginalTitle;
+    let $detailedSearchReleaseDate;
+    let $detailedSearchVoteAverage;
+
     const $resultTitle = document.querySelector('#result_title');
-    let keyword = $simpleSearchText.value;
-    let option = movieSimpleSearchOption;
-    let movieTotalCount;
-    let movieList = []
+    let keyword;
+    let option = contentSimpleSearchOption;
+    let contentList = []
     let moviePageCount;
+    let TVPageCount;
     let currentPages = 0;
 
-    if (keyword === '') {
-        alert(`검색할 ${option}을(를) 입력하세요.`);
+    console.log('검색 버튼 클릭');
+    if (isSimpleSearch) {
+        $simpleSearchText = document.querySelector('#simple_search_text');
+        keyword = $simpleSearchText.value;
+        console.log('단순 검색 버튼 클릭');
+    }
+    else {
+        $detailedSearchTitle = document.querySelector('#detailed_title');
+        $detailedSearchOriginalTitle = document.querySelector('#detailed_original_title');
+        $detailedSearchReleaseDate = document.querySelector('#detailed_release_date');
+        $detailedSearchVoteAverage = document.querySelector('#detailed_vote_average');
+
+        keyword = {};
+        keyword['title'] = $detailedSearchTitle.value;
+        keyword['originalTitle'] = $detailedSearchOriginalTitle.value;
+        keyword['releaseDate'] = $detailedSearchReleaseDate.value;
+        keyword['voteAverage'] = $detailedSearchVoteAverage.value;
+        console.log('상세 검색 버튼 클릭');
+    }
+
+    if (!checkSearchKeyword(isSimpleSearch, option, keyword)) {
+        console.log('검색어 체크 실패');
         return;
     }
+    console.log('검색어 체크 성공');
+    return; // 임시
+    if (navigationStatus === 'movie') {
+        moviePageCount = await getMovieTotalPagesCount();
+        console.log('page 개수', moviePageCount);
 
-    else if (option === '출시일') {
-        var regex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
-        if (!regex.test(keyword)) {
-            alert('입력한 출시일이 올바른 형식이 아닙니다.');
-            return;
-        }
-    }
+        let pages = []
 
-    else if (option === '평점') {
-        var regex = RegExp(/^[1-9]{1}\.{1}[0-9]{3}$/);
-        if (!regex.test(keyword)) {
-            alert('입력한 평점이 올바른 형식이 아닙니다.');
-            return;
+        for (let i = 1; i <= moviePageCount; i++) {
+            pages.push(i);
         }
-    }
 
-    moviePageCount = await getMovieTotalPagesCount();
-    console.log('page 개수', moviePageCount);
+        await Promise.allSettled(
+            pages.map(async item => {
+                contentList = contentList.concat(await getMovieByPage(item));
+                console.log(item);
+                currentPages++;
+                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${moviePageCount})`;
+            }));
+    } else {
+        TVPageCount = await getTVTotalPagesCount();
+        console.log('page 개수', TVPageCount);
 
-    let pages = []
+        let pages = []
 
-    for (let i = 1; i <= moviePageCount; i++) {
-        pages.push(i);
+        for (let i = 1; i <= TVPageCount; i++) {
+            pages.push(i);
+        }
+
+        await Promise.allSettled(
+            pages.map(async item => {
+                contentList = contentList.concat(await getTVByPage(item));
+                console.log(item);
+                currentPages++;
+                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${moviePageCount})`;
+            }));
     }
-    await Promise.allSettled(
-        pages.map(async item => {
-            movieList = movieList.concat(await getMovieByPage(item));
-            console.log(item);
-            currentPages++;
-            $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${moviePageCount})`;
-        }));
-    if (option === '제목') {
-        for (let index = 0; index < movieList.length; index++) {
-            if (movieList[index]['title'].toUpperCase().includes(keyword.toUpperCase())) {
-                movieSearchResult.push(movieList[index]);
-            }
+    if (isSimpleSearch) {
+        switch (option) {
+            case '제목':
+                contentList = contentList.filter(content => content['title'].toUpperCase().includes(keyword.toUpperCase()));
+                break;
+            case '원제':
+                contentList = contentList.filter(content => content['originalTitle'].toUpperCase().includes(keyword.toUpperCase()));
+                break;
+            case '출시일':
+                contentList = contentList.filter(content => isEqualDate(content['releaseDate'], new Date(keyword)));
+                break;
+            case '평점':
+                contentList = contentList.filter(content => content['voteAverage'] === Number(keyword));
+                break;
         }
     }
-    else if (option === '원제') {
-        for (let index = 0; index < movieList.length; index++) {
-            if (movieList[index]['originalTitle'].toUpperCase().includes(keyword.toUpperCase())) {
-                movieSearchResult.push(movieList[index]);
-            }
-        }
-    }
-    else if (option === '출시일') {
-        for (let index = 0; index < movieList.length; index++) {
-            if (isEqualDate(movieList[index]['releaseDate'], new Date(keyword))) {
-                console.log('일치함');
-                movieSearchResult.push(movieList[index]);
-            }
-        }
-    }
-    else if (option === '평점') {
-        for (let index = 0; index < movieList.length; index++) {
-            if (movieList[index]['voteAverage'] === Number(keyword)) {
-                console.log('일치함');
-                movieSearchResult.push(movieList[index]);
-            }
-        }
+    else {
+        contentList = contentList.filter(content => content['voteAverage'] === Number(keyword))
+            .filter(content => isEqualDate(content['releaseDate'], new Date(keyword)))
+            .filter(content => content['title'].toUpperCase().includes(keyword.toUpperCase()))
+            .filter(content => content['originalTitle'].toUpperCase().includes(keyword.toUpperCase()));
     }
 
     clearCards();
-    for (let index = 0; index < movieSearchResult.length; index++)
-        makeCard(...Object.values(movieSearchResult[index]), index);
-    movieSearchResult = [];
-    $resultTitle.textContent = `${movieSimpleSearchOption} 검색 결과 (${currentPages}/${moviePageCount})`;
+    for (let index = 0; index < contentSearchResult.length; index++)
+        makeCard(...Object.values(contentSearchResult[index]), index);
+    contentList = [];
+    $resultTitle.textContent = `${contentSimpleSearchOption} 검색 결과 (${currentPages}/${moviePageCount})`;
 }
 
 function home() {
@@ -385,13 +481,10 @@ async function myReservations() {
     const $resultTitle = document.querySelector('#result_title');
     navigationStatus = '찜 목록';
 
-    if (contentReservationSet.size === 0) {
+    if (contentReservationList.length === 0) {
         $resultTitle.textContent = '내가 찜한 콘텐츠가 없습니다.';
         clearCards();
     } else {
-        for (let movie of contentReservationSet) {
-            contentReservationList.push(movie);
-        }
 
         clearCards();
 
@@ -401,5 +494,4 @@ async function myReservations() {
         contentReservationList = [];
         $resultTitle.textContent = '내가 찜한 콘텐츠들';
     }
-
 }
