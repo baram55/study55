@@ -68,81 +68,81 @@ async function getTVByPage(page) {
     return result;
 }
 
-async function getMovieById(id) {
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: config.APIKey
-        }
-    };
-    // fetch('https://api.themoviedb.org/3/discover/tv?language=ko-KR&page=1&sort_by=popularity.desc', options) // 드라마
-    const result = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=ko-KR`, options)
-        .then(response => response.json())
-        .then(response => response)
-        .catch(err => console.error(err));
+// async function getMovieById(id) {
+//     const options = {
+//         method: 'GET',
+//         headers: {
+//             accept: 'application/json',
+//             Authorization: config.APIKey
+//         }
+//     };
 
-    let contentId = result['id'];
-    let posterPath = 'https://image.tmdb.org/t/p/original/' + result['poster_path'];
-    let title = result['title'];
-    let originalTitle = result['original_title'];
-    let releaseDate = new Date(String(result['release_date']));
-    let overview = result['overview'].replaceAll('\'', '');
-    let voteAverage = result['vote_average'];
+//     const result = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=ko-KR`, options)
+//         .then(response => response.json())
+//         .then(response => response)
+//         .catch(err => console.error(err));
 
-    return {
-        'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle,
-        'releaseDate': releaseDate, 'voteAverage': voteAverage, 'overview': overview,
-    };
-}
+//     let contentId = result['id'];
+//     let posterPath = 'https://image.tmdb.org/t/p/original/' + result['poster_path'];
+//     let title = result['title'];
+//     let originalTitle = result['original_title'];
+//     let releaseDate = new Date(String(result['release_date']));
+//     let overview = result['overview'].replaceAll('\'', '');
+//     let voteAverage = result['vote_average'];
 
-async function getTVById(id) { // 작동 안함
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: config.APIKey
-        }
-    };
-    const result = await fetch(`https://api.themoviedb.org/3/TV/${id}?language=ko-KR`, options)
-        .then(response => response.json())
-        .then(response => response)
-        .catch(err => console.error(err));
+//     return {
+//         'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle,
+//         'releaseDate': releaseDate, 'voteAverage': voteAverage, 'overview': overview,
+//     };
+// }
 
-    console.log(response);
+// async function getTVById(id) {
+//     const options = {
+//         method: 'GET',
+//         headers: {
+//             accept: 'application/json',
+//             Authorization: config.APIKey
+//         }
+//     };
+//     const result = await fetch(`https://api.themoviedb.org/3/TV/${id}?language=ko-KR`, options)
+//         .then(response => response.json())
+//         .then(response => response)
+//         .catch(err => console.error(err));
 
-    let contentId = result['id'];
-    let posterPath = 'https://image.tmdb.org/t/p/original/' + result['poster_path'];
-    let title = result['title'];
-    let originalTitle = result['original_title'];
-    let releaseDate = new Date(String(result['release_date']));
-    let overview = result['overview'];
-    let voteAverage = result['vote_average'];
+//     console.log(response);
+
+//     let contentId = result['id'];
+//     let posterPath = 'https://image.tmdb.org/t/p/original/' + result['poster_path'];
+//     let title = result['title'];
+//     let originalTitle = result['original_title'];
+//     let releaseDate = new Date(String(result['release_date']));
+//     let overview = result['overview'];
+//     let voteAverage = result['vote_average'];
 
 
 
-    return {
-        'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle,
-        'releaseDate': releaseDate, 'overview': overview, 'voteAverage': voteAverage
-    };
-}
+//     return {
+//         'contentId': contentId, 'posterPath': posterPath, 'title': title, 'originalTitle': originalTitle,
+//         'releaseDate': releaseDate, 'overview': overview, 'voteAverage': voteAverage
+//     };
+// }
 
-async function getMovieTotalCount() {
-    const options = {
-        method: 'GET',
-        headers: {
-            accept: 'application/json',
-            Authorization: config.APIKey
-        }
-    };
+// async function getMovieTotalCount() {
+//     const options = {
+//         method: 'GET',
+//         headers: {
+//             accept: 'application/json',
+//             Authorization: config.APIKey
+//         }
+//     };
 
-    const result = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=ko-kor&page=1`, options)
-        .then(response => response.json())
-        .then(response => response['total_results'])
-        .catch(err => console.error(err));
+//     const result = await fetch(`https://api.themoviedb.org/3/movie/top_rated?language=ko-kor&page=1`, options)
+//         .then(response => response.json())
+//         .then(response => response['total_results'])
+//         .catch(err => console.error(err));
 
-    return result;
-}
+//     return result;
+// }
 
 async function getMovieTotalPagesCount() {
     const options = {
@@ -297,15 +297,12 @@ function clearCards() {
 
 function checkSearchKeyword(isSimpleSearch, option, keyword) {
     if (isSimpleSearch) {
-        console.log('간단 검색어 체크 시작');
-        console.log('option', option);
         if (keyword === '') {
             alert(`검색할 ${option}을(를) 입력하세요.`);
             return false;
         }
 
         else if (option === '출시일') {
-            console.log(option, '검색어  필터링');
             let regex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
             if (!regex.test(keyword)) {
                 alert('입력한 출시일이 올바른 형식이 아닙니다.');
@@ -314,7 +311,6 @@ function checkSearchKeyword(isSimpleSearch, option, keyword) {
         }
 
         else if (option === '평점') {
-            console.log(option, '검색어  필터링');
             let regex = RegExp(/^[1-9]{1}\.{1}[0-9]{3}$/);
             if (!regex.test(keyword)) {
                 alert('입력한 평점이 올바른 형식이 아닙니다.');
@@ -323,7 +319,6 @@ function checkSearchKeyword(isSimpleSearch, option, keyword) {
         }
     }
     else {
-        console.log('상세 검색어 체크 시작');
         let releaseDateRegex = RegExp(/^\d{4}.(0[1-9]|1[012]).(0[1-9]|[12][0-9]|3[01])$/);
         let voteAverageRregex = RegExp(/^[1-9]{1}\.{1}[0-9]{3}$/);
 
@@ -357,13 +352,10 @@ async function search(isSimpleSearch) {
     let option = contentSimpleSearchOption;
     let contentList = []
     let pageCount;
-    let currentPages = 0;
 
-    console.log('검색 버튼 클릭');
     if (isSimpleSearch) {
         $simpleSearchText = document.querySelector('#simple_search_text');
         keyword = $simpleSearchText.value;
-        console.log('단순 검색 버튼 클릭');
     }
     else {
         $detailedSearchTitle = document.querySelector('#detailed_title');
@@ -376,7 +368,6 @@ async function search(isSimpleSearch) {
         keyword['originalTitle'] = $detailedSearchOriginalTitle.value;
         keyword['releaseDate'] = $detailedSearchReleaseDate.value;
         keyword['voteAverage'] = $detailedSearchVoteAverage.value;
-        console.log('상세 검색 버튼 클릭');
     }
 
     if (!checkSearchKeyword(isSimpleSearch, option, keyword)) {
@@ -396,14 +387,10 @@ async function search(isSimpleSearch) {
         await Promise.allSettled(
             pages.map(async item => {
                 contentList = contentList.concat(await getMovieByPage(item));
-                console.log('page', item);
-                currentPages++;
-                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${pageCount})`;
             }));
     } else {
-        //TVPageCount = await getTVTotalPagesCount();
+        //TVPageCount = await getTVTotalPagesCount(); // 페이지 너무 많음
         pageCount = 5;
-        console.log('page 개수', pageCount);
 
         let pages = []
 
@@ -414,9 +401,6 @@ async function search(isSimpleSearch) {
         await Promise.allSettled(
             pages.map(async item => {
                 contentList = contentList.concat(await getTVByPage(item));
-                console.log('page', item);
-                currentPages++;
-                $resultTitle.textContent = `데이터 가져오는 중 (${currentPages}/${pageCount})`;
             }));
     }
     if (isSimpleSearch) {
@@ -436,12 +420,6 @@ async function search(isSimpleSearch) {
         }
     }
     else {
-        console.log('영화 가져오기');
-        console.log(contentList);
-
-        // for (content of contentList) {
-        //     console.log('평점', content['voteAverage'], Number(keyword['voteAverage']));
-        // }
         contentList = contentList.filter(content => content['voteAverage'] === Number(keyword['voteAverage']))
             .filter(content => isEqualDate(content['releaseDate'], new Date(keyword['releaseDate'])))
             .filter(content => content['title'].toUpperCase().includes(keyword['title'].toUpperCase()))
@@ -452,7 +430,7 @@ async function search(isSimpleSearch) {
     for (let index = 0; index < contentList.length; index++)
         makeCard(...Object.values(contentList[index]), index);
     contentList = [];
-    $resultTitle.textContent = `${contentSimpleSearchOption} 검색 결과 (${currentPages}/${pageCount})`;
+    $resultTitle.textContent = `${contentSimpleSearchOption} 검색 결과`;
 }
 
 function home() {
